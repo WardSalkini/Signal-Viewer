@@ -1,0 +1,249 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #0f0f23;
+    color: #e0e0e0;
+    min-height: 100vh;
+}
+
+header {
+    background: linear-gradient(135deg, #1a1a3e, #2d2d6b);
+    padding: 20px 40px;
+    border-bottom: 2px solid #4a4a8a;
+}
+
+header h1 {
+    font-size: 1.8rem;
+    margin-bottom: 15px;
+    color: #00d4ff;
+}
+
+nav {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.tab-btn {
+    padding: 10px 20px;
+    border: 1px solid #4a4a8a;
+    background: transparent;
+    color: #aaa;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    transition: all 0.3s;
+}
+
+.tab-btn:hover {
+    background: #2d2d6b;
+    color: #fff;
+}
+
+.tab-btn.active {
+    background: #4a4a8a;
+    color: #00d4ff;
+    border-color: #00d4ff;
+}
+
+main {
+    max-width: 900px;
+    margin: 30px auto;
+    padding: 0 20px;
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+.tab-content h2 {
+    color: #00d4ff;
+    margin-bottom: 10px;
+    font-size: 1.5rem;
+}
+
+.tab-content > p {
+    color: #999;
+    margin-bottom: 25px;
+    line-height: 1.6;
+}
+
+.controls {
+    background: #1a1a3e;
+    padding: 25px;
+    border-radius: 12px;
+    margin-bottom: 25px;
+    border: 1px solid #333;
+}
+
+.control-group {
+    margin-bottom: 18px;
+}
+
+.control-group label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 0.9rem;
+    color: #ccc;
+}
+
+.control-group label span {
+    color: #00d4ff;
+    font-weight: bold;
+}
+
+input[type="range"] {
+    width: 100%;
+    height: 6px;
+    -webkit-appearance: none;
+    appearance: none;
+    background: #333;
+    border-radius: 3px;
+    outline: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #00d4ff;
+    cursor: pointer;
+}
+
+input[type="file"] {
+    width: 100%;
+    padding: 10px;
+    background: #0f0f23;
+    border: 1px dashed #4a4a8a;
+    border-radius: 8px;
+    color: #ccc;
+    cursor: pointer;
+}
+
+.primary-btn {
+    padding: 12px 30px;
+    background: linear-gradient(135deg, #00d4ff, #0088cc);
+    border: none;
+    border-radius: 8px;
+    color: #fff;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-right: 10px;
+}
+
+.primary-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 212, 255, 0.4);
+}
+
+.primary-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.secondary-btn {
+    padding: 12px 30px;
+    background: transparent;
+    border: 1px solid #4a4a8a;
+    border-radius: 8px;
+    color: #ccc;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.secondary-btn:hover:not(:disabled) {
+    background: #2d2d6b;
+    color: #fff;
+}
+
+.secondary-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.visualization {
+    background: #1a1a3e;
+    padding: 25px;
+    border-radius: 12px;
+    border: 1px solid #333;
+}
+
+.visualization h3 {
+    color: #00d4ff;
+    margin-bottom: 15px;
+    font-size: 1.1rem;
+}
+
+canvas {
+    width: 100%;
+    background: #0a0a1a;
+    border-radius: 8px;
+    border: 1px solid #333;
+    margin-bottom: 15px;
+}
+
+.info-box {
+    background: #0f0f23;
+    padding: 15px;
+    border-radius: 8px;
+    border-left: 3px solid #00d4ff;
+}
+
+.info-box p {
+    margin-bottom: 5px;
+    font-size: 0.9rem;
+    color: #aaa;
+}
+
+.results-box {
+    background: #0f2f0f;
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid #0a0;
+    margin-top: 15px;
+}
+
+.results-box h3 {
+    color: #0f0;
+    margin-bottom: 12px;
+}
+
+.results-box p {
+    margin-bottom: 8px;
+    font-size: 0.95rem;
+}
+
+.results-box span {
+    color: #0f0;
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+@media (max-width: 600px) {
+    header {
+        padding: 15px 20px;
+    }
+    header h1 {
+        font-size: 1.3rem;
+    }
+    nav {
+        flex-direction: column;
+    }
+    .tab-btn {
+        width: 100%;
+    }
+}

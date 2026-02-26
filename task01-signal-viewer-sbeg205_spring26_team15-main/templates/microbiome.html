@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🧬 Microbiome Signals</title>
+  <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <header>
+    <h1>🧬 Microbiome Signals</h1>
+    <p>Visualize microbiome data &amp; estimate patient profiles</p>
+  </header>
+
+  <main>
+    <!-- Data Upload Section -->
+    <section id="upload-section">
+      <h2>📂 Load Dataset</h2>
+      <input type="file" id="csvUpload" accept=".csv,.tsv" />
+    </section>
+
+    <!-- Overview Stats -->
+    <section id="stats-section" class="hidden">
+      <h2>📊 Dataset Overview</h2>
+      <div id="stats-cards" class="card-grid"></div>
+    </section>
+
+    <!-- Visualization Tabs -->
+    <section id="viz-section" class="hidden">
+      <h2>🔬 Bacterial Profiling</h2>
+      <div class="tab-bar">
+        <button class="tab active" data-tab="abundance">Abundance Bar</button>
+        <button class="tab" data-tab="heatmap">Heatmap</button>
+        <button class="tab" data-tab="pie">Composition Pie</button>
+        <button class="tab" data-tab="diversity">Diversity</button>
+      </div>
+      <div id="chart-container"></div>
+    </section>
+
+    <!-- Patient Profile Estimator -->
+    <section id="profiler-section" class="hidden">
+      <h2>🩺 Patient Profile Estimator</h2>
+      <div class="profiler-controls">
+        <label>Select Patient/Sample:
+          <select id="patientSelect"></select>
+        </label>
+      </div>
+      <div id="patient-profile"></div>
+      <div id="patient-chart"></div>
+    </section>
+  </main>
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/microbiome-styles.css') }}" />
+  <script src="{{ url_for('static', filename='js/dataLoader.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/charts.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/patientProfiler.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/microbiome-app.js') }}"></script>
+</body>
+</html>
