@@ -12,7 +12,7 @@ import yfinance as yf
 # AI and ML classifiers
 from models.ecg_classifier import ECGClassifier
 from models.eeg_classifier import EEGClassifier
-from models.ml_detector import classify_ecg_classic, classify_eeg_classic
+from models.ml_detector import classify_ecg_binary, classify_eeg_classic
 
 DEF_SR = 1000
 
@@ -338,7 +338,7 @@ def classify_signal():
     try:
         if signal_type == 'ecg':
             ai_result = ecg_classifier.classify(signals, sr)
-            ml_result = classify_ecg_classic(signals, sr)
+            ml_result = classify_ecg_binary(signals, sr)
         else:
             ai_result = eeg_classifier.classify(signals, sr)
             ml_result = classify_eeg_classic(signals, sr)

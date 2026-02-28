@@ -130,7 +130,6 @@
             color: white;
         }
 
-        /* ── NEW: Select All button ── */
         .btn-select-all {
             background: rgba(0, 212, 255, 0.15);
             color: #00d4ff;
@@ -305,7 +304,6 @@
             background: #6c757d;
         }
 
-        /* ── channel select row with Select All button ── */
         .channel-select-wrapper {
             display: flex;
             align-items: flex-start;
@@ -366,7 +364,6 @@
             margin-bottom: 10px;
         }
 
-        /* XOR styles */
         .xor-legend {
             background: rgba(0, 0, 0, 0.6);
             border: 1px solid rgba(0, 212, 255, 0.3);
@@ -398,7 +395,6 @@
             color: #00d4ff;
         }
 
-        /* Split view */
         .split-charts-container {
             display: flex;
             flex-direction: column;
@@ -419,7 +415,6 @@
             height: 100% !important;
         }
 
-        /* Channel popover */
         .ch-popover {
             position: absolute;
             background: #1e2a3a;
@@ -456,7 +451,6 @@
             width: 100%;
         }
 
-        /* View / polar mode buttons */
         .view-mode-btns,
         .polar-mode-btns {
             display: flex;
@@ -487,7 +481,7 @@
             border-color: #a55eea;
         }
 
-        /* Classification */
+        /* ── Classification panel ── */
         .classify-panel {
             margin-top: 15px;
             padding: 15px;
@@ -581,7 +575,7 @@
         }
 
         .prob-label {
-            width: 55px;
+            width: 80px;
             text-align: right;
             color: #aaa;
             flex-shrink: 0;
@@ -611,6 +605,16 @@
 
         .prob-bar.low {
             background: #26de81;
+        }
+
+        /* Normal label always green bar */
+        .prob-bar.normal-bar {
+            background: #26de81;
+        }
+
+        /* Arrhythmia label always red bar */
+        .prob-bar.arrhythmia-bar {
+            background: #ff6b6b;
         }
 
         .prob-val {
@@ -661,7 +665,6 @@
             color: #00d4ff;
         }
 
-        /* Cumulative polar info bar */
         .polar-accum-info {
             background: rgba(165, 94, 234, 0.08);
             border: 1px solid rgba(165, 94, 234, 0.3);
@@ -677,14 +680,12 @@
             color: #a55eea;
         }
 
-        /* ── Min window info badge ── */
         .window-min-badge {
             font-size: 0.68rem;
             color: #666;
             margin-left: 4px;
         }
 
-        /* ── Number input above sliders ── */
         .slider-input-wrap {
             display: flex;
             flex-direction: column;
@@ -708,7 +709,6 @@
             text-align: center;
             outline: none;
             transition: border-color 0.2s, background 0.2s;
-            /* Remove browser spin arrows */
             -moz-appearance: textfield;
         }
 
@@ -732,6 +732,29 @@
             font-size: 0.67rem;
             color: #555;
             white-space: nowrap;
+        }
+
+        /* ── ECG binary result pill ── */
+        .ecg-binary-pill {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            margin-left: 6px;
+            vertical-align: middle;
+        }
+
+        .ecg-binary-pill.normal {
+            background: rgba(38, 222, 129, 0.18);
+            color: #26de81;
+            border: 1px solid #26de81;
+        }
+
+        .ecg-binary-pill.arrhythmia {
+            background: rgba(255, 107, 107, 0.18);
+            color: #ff6b6b;
+            border: 1px solid #ff6b6b;
         }
     </style>
 </head>
@@ -832,7 +855,6 @@
                 </div>
                 <div class="info" id="info-${this.id}">No data loaded</div>
 
-                <!-- ══ CHANGE 1: channel row now has a Select-All button ══ -->
                 <div class="channel-select-wrapper" id="chSelectWrapper-${this.id}">
                     <button class="btn-select-all" id="selectAllBtn-${this.id}"
                         onclick="windows[${this.id}].toggleSelectAll()">☑ Select All</button>
@@ -852,8 +874,6 @@
                     </div>
                 </div>
                 <div class="settings">
-
-                    <!-- ══ Speed ══ -->
                     <div class="control-group">
                         <label>Speed <span style="color:#555;font-size:0.7rem;">(×)</span></label>
                         <div class="slider-input-wrap">
@@ -870,7 +890,6 @@
                         </div>
                     </div>
 
-                    <!-- ══ Period ══ -->
                     <div class="control-group" id="periodGroup-${this.id}" style="display:none;">
                         <label>Period <span style="color:#555;font-size:0.7rem;">(s)</span></label>
                         <div class="slider-input-wrap">
@@ -887,7 +906,6 @@
                         </div>
                     </div>
 
-                    <!-- ══ Window (min set dynamically in loadData) ══ -->
                     <div class="control-group" id="windowGroup-${this.id}">
                         <label>
                             Window <span style="color:#555;font-size:0.7rem;">(s)</span>
@@ -992,7 +1010,7 @@
                 this.initChart();
             }
 
-            // ── Canvas / chart init ─────────────────────────────────────────────────
+            // ── Canvas / chart init ──────────────────────────────────────────────────
 
             _freshCanvas() {
                 const old = document.getElementById(`chart-${this.id}`);
@@ -1064,7 +1082,7 @@
                 attachPan(this.chart);
             }
 
-            // ── Zoom ─────────────────────────────────────────────────────────────────
+            // ── Zoom ──────────────────────────────────────────────────────────────────
 
             _chartTargets() { return this.viewMode === 'split' && this.splitCharts.length ? this.splitCharts : [this.chart]; }
             zoomIn() { this._chartTargets().forEach(c => c.zoom(1.2)); }
@@ -1076,7 +1094,7 @@
                 this._chartTargets().forEach(c => { c.options.plugins.zoom.zoom.mode = mode; c.update('none'); });
             }
 
-            // ── File loading ──────────────────────────────────────────────────────────
+            // ── File loading ─────────────────────────────────────────────────────────
 
             async loadFile(event) {
                 const files = event.target.files;
@@ -1113,9 +1131,6 @@
                 document.getElementById(`info-${this.id}`).textContent =
                     `${this.channels.length} channels | ${this.sr.toFixed(0)} Hz | ${this.duration.toFixed(1)}s`;
 
-                // ══════════════════════════════════════════════════════════════════
-                // CHANGE 1 — Build channel buttons (unchanged logic, same wrapper)
-                // ══════════════════════════════════════════════════════════════════
                 const container = document.getElementById(`channels-${this.id}`);
                 container.innerHTML = this.channels.map((ch, i) =>
                     `<button class="channel-btn ${i < 2 ? 'active' : ''}"
@@ -1123,7 +1138,7 @@
                     oncontextmenu="event.preventDefault();windows[${this.id}].toggleChProps('${ch}',this)">${ch}</button>`
                 ).join('');
                 this.selectedChannels = this.channels.slice(0, Math.min(2, this.channels.length));
-                this._syncSelectAllBtn();   // keep button label in sync
+                this._syncSelectAllBtn();
 
                 const opts = this.channels.map(ch => `<option value="${ch}">${ch}</option>`).join('');
                 document.getElementById(`ch1-${this.id}`).innerHTML = opts;
@@ -1132,48 +1147,26 @@
                 this.ch1 = this.channels[0];
                 this.ch2 = this.channels.length > 1 ? this.channels[1] : this.channels[0];
 
-                // ══════════════════════════════════════════════════════════════════
-                // CHANGE 2 — Dynamic min window = duration / 40
-                // ══════════════════════════════════════════════════════════════════
                 const minWindowSec = parseFloat((this.duration / 40).toFixed(2));
-
-                // Period shares the same dynamic minimum as the window
                 this.minPeriod = minWindowSec;
                 const ps = document.getElementById(`periodSlider-${this.id}`);
                 const pn = document.getElementById(`periodNum-${this.id}`);
-                ps.min = minWindowSec;
-                pn.min = minWindowSec;
-                // Clamp current period value in case it's now below the new min
+                ps.min = minWindowSec; pn.min = minWindowSec;
                 const clampedPeriod = Math.max(this.period, minWindowSec);
-                ps.value = clampedPeriod;
-                pn.value = clampedPeriod.toFixed(2);
+                ps.value = clampedPeriod; pn.value = clampedPeriod.toFixed(2);
                 this.period = clampedPeriod;
-                document.getElementById(`periodRangeHint-${this.id}`).textContent =
-                    `${minWindowSec.toFixed(2)} – 5 s`;
+                document.getElementById(`periodRangeHint-${this.id}`).textContent = `${minWindowSec.toFixed(2)} – 5 s`;
 
                 const ws = document.getElementById(`windowSlider-${this.id}`);
-                ws.min = minWindowSec;           // ← dynamic minimum
-                ws.max = this.duration.toFixed(1);
+                ws.min = minWindowSec; ws.max = this.duration.toFixed(1);
                 ws.step = Math.max(0.01, parseFloat((minWindowSec / 10).toFixed(3)));
-
-                // Keep number input in sync with the same limits
                 const wn = document.getElementById(`windowNum-${this.id}`);
-                wn.min = minWindowSec;
-                wn.max = this.duration.toFixed(1);
-                wn.step = ws.step;
-
+                wn.min = minWindowSec; wn.max = this.duration.toFixed(1); wn.step = ws.step;
                 const initWindow = Math.min(4, this.duration);
                 const clampedInit = Math.max(initWindow, minWindowSec);
-                ws.value = clampedInit;
-                wn.value = clampedInit.toFixed(2);
-
-                // Show the min value as a small badge so the user knows what it is
-                document.getElementById(`windowMinBadge-${this.id}`).textContent =
-                    `(min: ${minWindowSec.toFixed(2)}s = dur/40)`;
-
-                // Update the range hint next to the number input
-                document.getElementById(`windowRangeHint-${this.id}`).textContent =
-                    `${minWindowSec.toFixed(2)} – ${parseFloat(this.duration.toFixed(1))} s`;
+                ws.value = clampedInit; wn.value = clampedInit.toFixed(2);
+                document.getElementById(`windowMinBadge-${this.id}`).textContent = `(min: ${minWindowSec.toFixed(2)}s = dur/40)`;
+                document.getElementById(`windowRangeHint-${this.id}`).textContent = `${minWindowSec.toFixed(2)} – ${parseFloat(this.duration.toFixed(1))} s`;
 
                 this.windowSize = Math.floor(this.sr * clampedInit);
                 document.getElementById(`position-${this.id}`).max = Math.max(0, this.nSamples - this.windowSize);
@@ -1182,7 +1175,7 @@
                 this.runClassification();
             }
 
-            // ── Classification ────────────────────────────────────────────────────────
+            // ── Classification ───────────────────────────────────────────────────────
 
             async runClassification() {
                 const panel = document.getElementById(`classify-${this.id}`);
@@ -1197,49 +1190,63 @@
             }
 
             buildClassifyHTML(data) {
-                const ai = data.ai, ml = data.ml;
-                const sigType = data.signal_type === 'ecg' ? '❤️ ECG' : '🧠 EEG';
-                const makeBars = p => p ? Object.entries(p).sort((a, b) => b[1] - a[1]).map(([k, v]) => {
-                    const cls = v > 50 ? 'high' : v > 25 ? 'medium' : 'low';
-                    return `<div class="prob-row"><span class="prob-label">${k}</span>
-                    <div class="prob-bar-bg"><div class="prob-bar ${cls}" style="width:${Math.min(v, 100)}%"></div></div>
-                    <span class="prob-val">${v.toFixed(1)}%</span></div>`;
-                }).join('') : '';
+                const ai = data.ai;
+                const ml = data.ml;
+                const isEcg = data.signal_type === 'ecg';
+                const sigType = isEcg ? '❤️ ECG' : '🧠 EEG';
+
                 const isAiN = ai.prediction === 'NORMAL' || ai.prediction === 'NORM';
                 const isMlN = ml.prediction === 'NORMAL' || ml.prediction === 'NORM';
+
+                // ── Probability bars ─────────────────────────────────────────────────
+                const makeBarsFull = p => p
+                    ? Object.entries(p).sort((a, b) => b[1] - a[1]).map(([k, v]) => {
+                        const cls = v > 50 ? 'high' : v > 25 ? 'medium' : 'low';
+                        return `<div class="prob-row">
+                            <span class="prob-label">${k}</span>
+                            <div class="prob-bar-bg"><div class="prob-bar ${cls}" style="width:${Math.min(v, 100)}%"></div></div>
+                            <span class="prob-val">${v.toFixed(1)}%</span></div>`;
+                    }).join('')
+                    : '';
+
+                const mlBars = makeBarsFull(ml.probabilities);
+
+                // ── Extra detail lines ────────────────────────────────────────────────
                 let mlDet = '', aiDet = '';
                 if (ml.details) {
                     const r = ml.details.reasons || [];
                     if (r.length) mlDet = `<ul class="ml-details">${r.map(x => `<li>${x}</li>`).join('')}</ul>`;
-                    if (ml.details.heart_rate !== undefined) mlDet += `<div style="font-size:0.7rem;color:#666;margin-top:4px;">HR: ${ml.details.heart_rate.toFixed(0)} bpm | Peaks: ${ml.details.n_peaks}</div>`;
+                    if (ml.details.heart_rate !== undefined)
+                        mlDet += `<div style="font-size:0.7rem;color:#666;margin-top:4px;">HR: ${ml.details.heart_rate.toFixed(0)} bpm | Peaks: ${ml.details.n_peaks}</div>`;
                 }
                 if (ai.details && ai.details.detected_pathologies && ai.details.detected_pathologies.length)
                     aiDet = `<div style="margin-top:6px;font-size:0.75rem;"><strong style="color:#ff6b6b;">Detected:</strong>
                     <ul class="ml-details" style="margin-top:2px;">${ai.details.detected_pathologies.map(d => `<li>${d.name} (${d.confidence.toFixed(1)}%)</li>`).join('')}</ul></div>`;
-                return `<div style="font-size:0.8rem;color:#888;margin-bottom:10px;">Signal: ${sigType} | ${data.signal_type.toUpperCase()}</div>
+
+                return `
+                <div style="font-size:0.8rem;color:#888;margin-bottom:10px;">Signal: ${sigType} | ${data.signal_type.toUpperCase()}</div>
                 <div class="classify-grid">
                     <div class="classify-card">
                         <h4>🤖 AI Model <span class="badge badge-ai">${ai.model || 'DenseNet1D'}</span></h4>
                         <div class="classify-result ${isAiN ? 'normal' : 'abnormal'}">${isAiN ? '✅' : '⚠️'} ${ai.class_name || ai.prediction}</div>
                         <div class="classify-conf">Confidence: ${ai.confidence.toFixed(1)}%</div>
-                        ${makeBars(ai.probabilities)}${aiDet}
+                        ${makeBarsFull(ai.probabilities)}${aiDet}
                     </div>
                     <div class="classify-card">
-                        <h4>📊 Classic ML <span class="badge badge-ml">${ml.model || 'Statistics'}</span></h4>
+                        <h4>
+                            📊 Classic ML
+                            <span class="badge badge-ml">${ml.model || 'Statistics'}</span>
+                            ${isEcg ? `<span class="ecg-binary-pill ${isMlN ? 'normal' : 'arrhythmia'}">Binary</span>` : ''}
+                        </h4>
                         <div class="classify-result ${isMlN ? 'normal' : 'abnormal'}">${isMlN ? '✅' : '⚠️'} ${ml.class_name || ml.prediction}</div>
                         <div class="classify-conf">Confidence: ${ml.confidence.toFixed(1)}%</div>
-                        ${makeBars(ml.probabilities)}${mlDet}
+                        ${mlBars}${mlDet}
                     </div>
                 </div>`;
             }
 
-            // ── Controls ──────────────────────────────────────────────────────────────
+            // ── Controls ─────────────────────────────────────────────────────────────
 
-            // ══════════════════════════════════════════════════════════════════════
-            // CHANGE 1 — Select All / Deselect All toggle
-            // ══════════════════════════════════════════════════════════════════════
-
-            /** Keep the Select-All button label and style in sync with reality. */
             _syncSelectAllBtn() {
                 const btn = document.getElementById(`selectAllBtn-${this.id}`);
                 if (!btn) return;
@@ -1248,21 +1255,16 @@
                 btn.classList.toggle('all-selected', allSelected);
             }
 
-            /** One click: selects everything if not all selected, otherwise deselects all. */
             toggleSelectAll() {
                 const container = document.getElementById(`channels-${this.id}`);
                 const allSelected = this.selectedChannels.length === this.channels.length;
-
                 if (allSelected) {
-                    // Deselect all
                     this.selectedChannels = [];
                     container.querySelectorAll('.channel-btn').forEach(b => b.classList.remove('active'));
                 } else {
-                    // Select all
                     this.selectedChannels = [...this.channels];
                     container.querySelectorAll('.channel-btn').forEach(b => b.classList.add('active'));
                 }
-
                 this._syncSelectAllBtn();
                 this.updateChart();
             }
@@ -1275,7 +1277,7 @@
                     this.selectedChannels.push(ch);
                     btn.classList.add('active');
                 }
-                this._syncSelectAllBtn();   // ← keep label in sync after individual toggle
+                this._syncSelectAllBtn();
                 this.updateChart();
             }
 
@@ -1287,7 +1289,6 @@
                 this.recurrencePoints = [];
                 this._resetPolarAccum();
                 const isXor = type === 'xor';
-
                 document.getElementById(`periodGroup-${this.id}`).style.display = type.includes('polar') ? 'block' : 'none';
                 document.getElementById(`viewModeGroup-${this.id}`).style.display = type === 'time' ? 'block' : 'none';
                 document.getElementById(`polarModeGroup-${this.id}`).style.display = type === 'polar' ? 'block' : 'none';
@@ -1295,24 +1296,17 @@
                 document.getElementById(`xorThreshGroup-${this.id}`).style.display = isXor ? 'block' : 'none';
                 document.getElementById(`xorLegend-${this.id}`).style.display = isXor ? 'block' : 'none';
                 document.getElementById(`xorChunkInfo-${this.id}`).style.display = isXor ? 'block' : 'none';
-                document.getElementById(`polarAccumInfo-${this.id}`).style.display =
-                    (type === 'polar' || type === 'polarRatio') ? 'block' : 'none';
-
+                document.getElementById(`polarAccumInfo-${this.id}`).style.display = (type === 'polar' || type === 'polarRatio') ? 'block' : 'none';
                 const needDropdowns = type === 'chvsch' || type === 'polarRatio' || type === 'recurrence';
                 document.getElementById(`chSelectWrapper-${this.id}`).style.display = needDropdowns ? 'none' : 'flex';
                 document.getElementById(`chDropdowns-${this.id}`).style.display = needDropdowns ? 'block' : 'none';
-
                 this.destroySplitCharts();
                 document.getElementById(`chartContainer-${this.id}`).style.display = 'block';
-
                 if (type === 'chvsch' || type === 'recurrence') this.initScatterChart();
                 else if (type.includes('polar')) this.initPolarChart();
                 else this.initChart();
-
                 this.updateChart();
             }
-
-            // ── Helpers: sync both the slider and the number-input box ────────────
 
             _syncSliderAndNum(sliderId, numId, val) {
                 const sl = document.getElementById(sliderId);
@@ -1328,8 +1322,6 @@
                 return bad ? null : v;
             }
 
-            // ── Speed ────────────────────────────────────────────────────────────────
-
             setSpeed(val) {
                 this.speed = parseFloat(val);
                 this._syncSliderAndNum(`speedSlider-${this.id}`, `speedNum-${this.id}`, val);
@@ -1342,8 +1334,6 @@
                 const sl = document.getElementById(`speedSlider-${this.id}`);
                 if (sl) sl.value = v;
             }
-
-            // ── Period ───────────────────────────────────────────────────────────────
 
             setPeriod(val) {
                 this.period = parseFloat(val);
@@ -1362,11 +1352,13 @@
                 this._resetPolarAccum();
                 this.updateChart();
             }
+
             setXorThreshold(val) {
                 this.xorThreshold = parseFloat(val);
                 document.getElementById(`xorThreshVal-${this.id}`).textContent = parseFloat(val).toFixed(3);
                 this.updateChart();
             }
+
             setViewMode(mode, btn) {
                 this.viewMode = mode;
                 document.querySelectorAll(`#window-${this.id} .view-mode-btn`).forEach(b => b.classList.remove('active')); btn.classList.add('active');
@@ -1374,21 +1366,22 @@
                 if (mode === 'combined') document.getElementById(`chartContainer-${this.id}`).style.display = 'block';
                 this.updateChart();
             }
-            setSignalType(type) { this.signalType = type; if (this.data) { fetch(`/api/set_signal_type?window_id=${this.id}&signal_type=${type}`); this.runClassification(); } }
+
+            setSignalType(type) {
+                this.signalType = type;
+                if (this.data) { fetch(`/api/set_signal_type?window_id=${this.id}&signal_type=${type}`); this.runClassification(); }
+            }
+
             setPolarMode(mode, btn) {
                 this.polarMode = mode;
                 this._resetPolarAccum();
                 document.querySelectorAll(`#window-${this.id} .polar-mode-btn`).forEach(b => b.classList.remove('active')); btn.classList.add('active');
                 this.updateChart();
             }
+
             setColormap(val) { this.colormap = val; this.updateChart(); }
 
-            // ── Polar accumulation helpers ─────────────────────────────────────────
-
-            _resetPolarAccum() {
-                this.polarAccum = {};
-                this._polarAccumEnd = {};
-            }
+            _resetPolarAccum() { this.polarAccum = {}; this._polarAccumEnd = {}; }
 
             _computePolarPoints(ch, start, end) {
                 const sig = this.data.signals[ch].slice(start, end);
@@ -1406,15 +1399,9 @@
             }
 
             _appendPolarAccum(ch, start, end) {
-                if (!this.polarAccum[ch]) {
-                    this.polarAccum[ch] = [];
-                    this._polarAccumEnd[ch] = 0;
-                }
+                if (!this.polarAccum[ch]) { this.polarAccum[ch] = []; this._polarAccumEnd[ch] = 0; }
                 const prevEnd = this._polarAccumEnd[ch];
-                if (start < prevEnd - this.windowSize) {
-                    this.polarAccum[ch] = [];
-                    this._polarAccumEnd[ch] = 0;
-                }
+                if (start < prevEnd - this.windowSize) { this.polarAccum[ch] = []; this._polarAccumEnd[ch] = 0; }
                 const newStart = Math.max(start, this._polarAccumEnd[ch]);
                 if (newStart >= end) return;
                 const sig = this.data.signals[ch];
@@ -1428,9 +1415,7 @@
                 }
                 this._polarAccumEnd[ch] = end;
                 const MAX_PTS = 25000;
-                if (this.polarAccum[ch].length > MAX_PTS) {
-                    this.polarAccum[ch] = this.polarAccum[ch].slice(-MAX_PTS);
-                }
+                if (this.polarAccum[ch].length > MAX_PTS) this.polarAccum[ch] = this.polarAccum[ch].slice(-MAX_PTS);
             }
 
             destroySplitCharts() {
@@ -1447,6 +1432,7 @@
                 const b = Math.round(pts[lo][2] * (1 - f) + pts[hi][2] * f);
                 return '#' + [r, g, b].map(c => c.toString(16).padStart(2, '0')).join('');
             }
+
             getChannelColor(ch, idx) { return (this.channelProps[ch] && this.channelProps[ch].color) || COLORS[idx % COLORS.length]; }
             getChannelThickness(ch) { return (this.channelProps[ch] && this.channelProps[ch].thickness) || 1.5; }
 
@@ -1466,8 +1452,6 @@
                 pop.style.top = (r.bottom - wr.top + 5) + 'px'; pop.style.left = (r.left - wr.left) + 'px';
                 pop.classList.add('open');
             }
-
-            // ── Split view ────────────────────────────────────────────────────────────
 
             _syncSplitZoom(src) {
                 this.splitCharts.forEach(c => {
@@ -1515,8 +1499,6 @@
                     chart.update('none');
                 });
             }
-
-            // ── XOR GRAPH ────────────────────────────────────────────────────────────
 
             updateXorChart(start, end) {
                 if (!this.selectedChannels.length) return;
@@ -1587,8 +1569,6 @@
                 this.chart.update('none');
             }
 
-            // ── Recurrence ────────────────────────────────────────────────────────────
-
             updateRecurrenceChart(start, end) {
                 if (!this.ch1 || !this.ch2) return;
                 const d1 = this.data.signals[this.ch1].slice(start, end), d2 = this.data.signals[this.ch2].slice(start, end);
@@ -1600,8 +1580,6 @@
                 this.chart.data.datasets = [{ label: `${this.ch1} vs ${this.ch2}`, data: this.recurrencePoints, backgroundColor: colors, pointRadius: 2, showLine: false }];
                 this.chart.update('none');
             }
-
-            // ── Window / position ─────────────────────────────────────────────────────
 
             setWindowSize(val) {
                 const minW = this.duration ? parseFloat((this.duration / 40).toFixed(2)) : 0.5;
@@ -1629,6 +1607,7 @@
                 this._resetPolarAccum();
                 this.updateChart();
             }
+
             setPosition(val) {
                 const newPos = parseInt(val);
                 if (newPos < this.position - this.windowSize) { this._resetPolarAccum(); }
@@ -1636,8 +1615,6 @@
                 this.updateChart();
                 this.updateTimeDisplay();
             }
-
-            // ── Playback ──────────────────────────────────────────────────────────────
 
             play() {
                 this.isPlaying = true;
@@ -1672,8 +1649,6 @@
                     `${(this.position / this.sr).toFixed(2)}s / ${this.duration.toFixed(2)}s`;
             }
 
-            // ── Master dispatcher ─────────────────────────────────────────────────────
-
             updateChart() {
                 if (!this.data) return;
                 if ((this.plotType === 'time' || this.plotType === 'polar' || this.plotType === 'xor') && !this.selectedChannels.length) return;
@@ -1685,8 +1660,6 @@
                 else if (this.plotType === 'polarRatio') { this.updatePolarRatioChart(start, end); }
                 else if (this.plotType === 'recurrence') { this.updateRecurrenceChart(start, end); }
             }
-
-            // ── Individual renderers ──────────────────────────────────────────────────
 
             updateTimeChart(start, end) {
                 const labels = this.data.time.slice(start, end).map(t => t.toFixed(3));
