@@ -1,142 +1,218 @@
-# ECG/EEG Signal Viewer 📊
+# 🩺 BioSignal Multi-Viewer Platform
 
-A web-based signal viewer for ECG and EEG data with smooth real-time animation, multiple viewing modes, and interactive controls.
+A Flask-based web application that brings together **four signal processing & visualization modules** in one unified interface. Built for biomedical engineering coursework (SBEG205 — Spring 2026, Team 15).
 
-![Signal Viewer](https://img.shields.io/badge/Python-Flask-blue) ![JavaScript](https://img.shields.io/badge/JavaScript-Chart.js-yellow) ![License](https://img.shields.io/badge/License-MIT-green)
+---
 
-## Features ✨
+## 📋 Table of Contents
 
-- **Multi-Window Support**: Up to 4 independent signal windows for comparison
-- **Smooth Animation**: Real-time playback using `requestAnimationFrame`
-- **Multiple Plot Types**:
-  - Signal vs Time (Cartesian)
-  - Channel vs Channel (XY Plot)
-  - Polar Plot (r = signal, θ = time)
-  - Polar Ratio Plot (|Ch1| / |Ch2|)
-- **Interactive Zoom & Pan**: 
-  - Mouse wheel zoom
-  - Drag to pan
-  - Axis-specific zoom (X, Y, or XY)
-- **Playback Controls**: Play, Pause, Reset, Speed control (0.1x - 5x)
-- **File Support**: EDF and CSV formats
+- [Modules Overview](#-modules-overview)
+- [Tech Stack](#-tech-stack)
+- [Installation](#-installation)
+- [Running the App](#-running-the-app)
+- [Project Structure](#-project-structure)
+- [Modules in Detail](#-modules-in-detail)
 
-## Installation 🛠️
+---
 
-### Prerequisites
-- Python 3.8+
-- pip
+## 🧩 Modules Overview
 
-### Setup
+| Module | Route | Description |
+|--------|-------|-------------|
+| 📊 **Medical Signal Viewer** | `/` | ECG/EEG signal viewer with AI & ML classification |
+| 📈 **Stock Market Dashboard** | `/stock-dashboard` | Real-time stock quotes, watchlist & price charts |
+| 🔊 **Acoustic Signal Lab** | `/acoustic-lab` | Doppler simulator, vehicle speed estimator & drone detector |
+| 🧬 **Microbiome Signals** | `/microbiome` | Gut microbiome abundance profiling & patient risk estimation |
 
-1. Clone or download this repository:
-```bash
-cd DSP-SignalViewer
-```
+---
 
-2. Install dependencies:
-```bash
-pip install -r requirements.txt
-```
+## 🛠 Tech Stack
 
-## Usage 🚀
+**Backend:** Python 3, Flask, NumPy, Pandas, PyEDFLib, WFDB, yfinance
 
-1. Start the server:
+**Frontend:** HTML5, CSS3, JavaScript, Chart.js, Plotly.js, PapaParse
+
+**AI/ML Models:** PyTorch (ECGNet via ecglib, EEGNet via Braindecode), scikit-learn–style classic ML detectors
+
+---
+
+## ⚙ Installation
+
+1. **Clone the repository:**
+   ```bash
+   git clone <repo-url>
+   cd task01-signal-viewer-sbeg205_spring26_team15-main
+   ```
+
+2. **Create a virtual environment (recommended):**
+   ```bash
+   python -m venv venv
+   venv\Scripts\activate        # Windows
+   # source venv/bin/activate   # macOS/Linux
+   ```
+
+3. **Install dependencies:**
+   ```bash
+   pip install flask numpy pandas pyedflib wfdb yfinance torch ecglib braindecode
+   ```
+
+---
+
+## 🚀 Running the App
+
 ```bash
 python app.py
 ```
 
-2. Open your browser and navigate to:
-```
-http://127.0.0.1:5000
-```
+Then open **http://localhost:5000** in your browser.
 
-3. Load data:
-   - Click **Demo** for sample ECG data
-   - Or upload your own `.edf` or `.csv` file
-
-4. Use the controls:
-   - **Plot Type**: Select visualization mode
-   - **Channels**: Select which channels to display
-   - **Speed**: Adjust playback speed (0.1x - 5x)
-   - **Window**: Adjust the time window size
-   - **Zoom**: Use +/−/↺ buttons or mouse wheel
-   - **Axis Lock**: Click X, Y, or XY to lock zoom/pan to specific axis
-
-## File Formats 📁
-
-### CSV Format
-```csv
-time,channel1,channel2,channel3
-0.000,0.12,0.34,0.56
-0.002,0.13,0.35,0.57
-...
-```
-
-### EDF Format
-Standard European Data Format (EDF/EDF+) files are supported.
-
-## Project Structure 📂
-
-```
-DSP-SignalViewer/
-├── app.py                 # Flask backend server
-├── requirements.txt       # Python dependencies
-├── README.md              # This file
-├── templates/
-│   └── index.html         # Frontend UI with JavaScript
-└── utils/
-    ├── __init__.py
-    ├── file_reader.py     # File parsing utilities
-    └── plots.py           # Plot generation (legacy Streamlit)
-```
-
-## Technologies Used 🔧
-
-- **Backend**: Python, Flask
-- **Frontend**: HTML5, CSS3, JavaScript
-- **Charts**: Chart.js with Zoom plugin
-- **File Parsing**: pyedflib, pandas, numpy
-
-## Controls Reference 🎮
-
-| Control | Description |
-|---------|-------------|
-| ▶ Play | Start animation |
-| ⏸ Pause | Stop animation |
-| ↺ Reset | Reset to beginning |
-| + / − | Zoom in/out |
-| XY / X / Y | Axis-specific zoom mode |
-| Position Slider | Navigate through signal |
-| Window Slider | Adjust visible time range |
-| Speed Slider | Adjust playback speed |
-
-## Screenshots 📸
-
-### Signal vs Time
-- Display multiple channels over time
-- Color-coded channel differentiation
-
-### Channel vs Channel (XY Plot)
-- Plot one channel against another
-- Color gradient shows time progression
-
-### Polar Plot
-- Signal amplitude mapped to radius
-- Time mapped to angle (θ)
-- Multiple channels with reference circle
-
-### Polar Ratio
-- Ratio of channel magnitudes (|Ch1|/|Ch2|)
-- Reference circles at r=1, 2, 3
-
-## License 📄
-
-MIT License - Feel free to use and modify for your projects.
-
-## Authors 👥
-
-Created for DSP Signal Processing course.
+Navigate between modules using the buttons on the home page or by going directly to the routes listed above.
 
 ---
 
-**Enjoy visualizing your signals! 🎉**
+## 📁 Project Structure
+
+```
+├── app.py                     # Flask server — all routes & API endpoints
+├── requirements.txt           # Python dependencies
+├── ECG.csv                    # Sample ECG data
+├── generate_hmp_data.py       # One-time script to generate microbiome CSV
+│
+├── models/                    # AI & Classic ML classifiers
+│   ├── ecg_classifier.py      # ECGNet (ResNet1D50) — 4 pathology models
+│   ├── eeg_classifier.py      # EEGNet (Braindecode) classifier
+│   ├── ml_detector.py         # Classic ML feature-based detection
+│   ├── ecgnet_weights.pt      # Pretrained ECG model weights
+│   └── eegnet_weights.pt      # Pretrained EEG model weights
+│
+├── templates/                 # HTML pages
+│   ├── index.html             # Medical Signal Viewer (main page)
+│   ├── stock-dashboard.html   # Stock Market Dashboard
+│   ├── acoustic-lab.html      # Acoustic Signal Processing Lab
+│   └── microbiome.html        # Microbiome Signals
+│
+├── static/
+│   ├── css/                   # Stylesheets
+│   ├── data/                  # Static data files (microbiome CSV)
+│   └── js/                    # JavaScript modules
+│       ├── script.js              # Stock dashboard logic
+│       ├── fft.js                 # FFT implementation
+│       ├── doppler-simulator.js   # Doppler effect audio synthesis
+│       ├── doppler-analyzer.js    # Vehicle speed estimation from audio
+│       ├── drone-detector.js      # Drone sound detection via spectral analysis
+│       ├── dataLoader.js          # CSV parser for microbiome data
+│       ├── charts.js              # Microbiome chart renderers (heatmap, bar, pie, diversity)
+│       ├── patientProfiler.js     # Patient risk profiler from microbiome signature
+│       └── microbiome-app.js      # Microbiome page controller
+│
+└── utils/                     # Utility modules
+```
+
+---
+
+## 🔍 Modules in Detail
+
+### 📊 1. Medical Signal Viewer — `/`
+
+The core module. Upload ECG or EEG signals and explore them interactively.
+
+**Supported file formats:** `.csv`, `.edf`, `.dat` (PhysioNet WFDB)
+
+**Features:**
+- **Multi-window support** — open multiple signal viewers side-by-side
+- **Plot types:** Signal vs Time, XOR Graph, Channel vs Channel (Lissajous), Polar Plot, Polar Ratio, Recurrence Plot
+- **View modes:** Combined (overlaid) or Split (one chart per channel)
+- **Interactive controls:** Play/pause animation, zoom (scroll), pan (drag), double-click to reset, speed & window size sliders
+- **Per-channel customization:** Color picker, line width, visibility toggle
+- **AI Classification:** Deep learning models (ECGNet ResNet1D50 for ECG, EEGNet for EEG) predict pathologies with probability bars
+- **Classic ML Classification:** Feature-based detectors (HRV analysis, spectral features, statistical metrics) for comparison
+- **Auto-detection:** Automatically detects ECG vs EEG based on channel names
+
+**API Endpoints:**
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `POST` | `/api/upload` | Upload signal files |
+| `GET` | `/api/all_data` | Retrieve loaded signal data |
+| `GET` | `/api/classify` | Run AI + ML classification |
+| `GET` | `/api/set_signal_type` | Override auto-detected signal type |
+
+---
+
+### 📈 2. Stock Market Dashboard — `/stock-dashboard`
+
+Real-time stock market data powered by **yfinance** (Yahoo Finance).
+
+**Features:**
+- **Search & Watchlist** — search for any stock ticker, add to your watchlist
+- **Live Quotes** — current price, change, change %, with color-coded indicators
+- **Bulk Quotes** — fetch up to 50 symbols in a single request
+- **Price Charts** — interactive historical charts with timeframes: 1W, 1M, 3M, 1Y
+
+**API Endpoints:**
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/api/stocks/quote?symbol=AAPL` | Single stock quote |
+| `GET` | `/api/stocks/bulk?symbols=AAPL,MSFT` | Bulk quotes |
+| `GET` | `/api/stocks/history?symbol=AAPL&period=1mo` | Historical price data |
+
+---
+
+### 🔊 3. Acoustic Signal Processing Lab — `/acoustic-lab`
+
+Three sub-modules for acoustic signal analysis:
+
+#### 🚗 Doppler Effect Simulator
+Generate realistic vehicle-passing sounds using the Doppler formula. Adjustable parameters:
+- Vehicle speed (5–150 m/s)
+- Horn frequency (100–2000 Hz)
+- Pass-by duration & closest distance
+- Real-time frequency visualization on canvas
+
+#### 📊 Vehicle Speed Estimator
+Upload a `.wav` or `.mp3` recording of a vehicle passing by to:
+- Generate a spectrogram via FFT
+- Extract the Doppler frequency curve
+- Estimate the vehicle's speed and horn frequency
+- Configurable frequency band (min/max)
+
+#### 🛸 Drone Sound Detector
+Upload audio or use your **live microphone** to detect drone presence:
+- Spectral analysis targeting rotor harmonics (80–500 Hz)
+- Detection confidence score
+- Dominant frequency & harmonic identification
+- Signal-to-Noise Ratio (SNR) measurement
+- Adjustable detection threshold and frequency band
+
+---
+
+### 🧬 4. Microbiome Signals — `/microbiome`
+
+Visualize gut microbiome abundance data and estimate patient health profiles.
+
+**How to use:** Upload a CSV file containing microbiome data (e.g., the provided `hmp_gut_microbiome.csv` from Desktop or your own dataset).
+
+**Expected CSV columns:** `SampleID, PatientID, Age, Sex, BMI, BodySite, Diagnosis, Bacteroides, Firmicutes, Proteobacteria, Actinobacteria, Fusobacteria, Verrucomicrobia, Tenericutes, Cyanobacteria, Spirochaetes, Synergistetes`
+
+**Visualizations:**
+- **Abundance Bar Chart** — bacterial abundances per sample
+- **Heatmap** — samples × bacteria abundance matrix
+- **Composition Pie** — relative bacterial composition
+- **Diversity Plot** — Shannon diversity across samples
+
+**Patient Profile Estimator:**
+Select a patient from the dropdown to see:
+- Disease risk assessment based on microbiome signature
+- Known microbiome–disease associations (IBD, T2D, Obesity, CRC)
+- Comparison of patient's profile against the population
+
+---
+
+## 👥 Team
+
+**Team 15** — SBEG205, Spring 2026
+
+---
+
+## 📄 License
+
+This project is developed for academic purposes as part of the Biomedical Engineering curriculum.

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acoustic Signal Processing</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header>
+        <h1>🔊 Acoustic Signal Processing Lab</h1>
+        <nav>
+            <button class="tab-btn active" data-tab="simulator">Doppler Simulator</button>
+            <button class="tab-btn" data-tab="analyzer">Vehicle Speed Estimator</button>
+            <button class="tab-btn" data-tab="drone">Drone Detector</button>
+        </nav>
+    </header>
+
+    <main>
+        <!-- ===================== TAB 1: DOPPLER SIMULATOR ===================== -->
+        <section id="simulator" class="tab-content active">
+            <h2>Vehicle-Passing Doppler Effect Simulator</h2>
+            <p>Generate the sound of a car passing by you. Control the vehicle speed and horn frequency.</p>
+
+            <div class="controls">
+                <div class="control-group">
+                    <label for="velocity">Vehicle Speed (v): <span id="velocity-val">30</span> m/s
+                        (<span id="velocity-kmh">108</span> km/h)</label>
+                    <input type="range" id="velocity" min="5" max="150" value="30" step="1">
+                </div>
+                <div class="control-group">
+                    <label for="frequency">Horn Frequency (f): <span id="frequency-val">440</span> Hz</label>
+                    <input type="range" id="frequency" min="100" max="2000" value="440" step="10">
+                </div>
+                <div class="control-group">
+                    <label for="sim-duration">Pass-by Duration: <span id="duration-val">4</span> s</label>
+                    <input type="range" id="sim-duration" min="2" max="10" value="4" step="0.5">
+                </div>
+                <div class="control-group">
+                    <label for="min-distance">Closest Distance: <span id="distance-val">5</span> m</label>
+                    <input type="range" id="min-distance" min="1" max="30" value="5" step="1">
+                </div>
+                <button id="play-doppler" class="primary-btn">▶ Play Doppler Effect</button>
+                <button id="stop-doppler" class="secondary-btn" disabled>■ Stop</button>
+            </div>
+
+            <div class="visualization">
+                <h3>Real-Time Frequency</h3>
+                <canvas id="doppler-canvas" width="800" height="300"></canvas>
+                <div id="doppler-info" class="info-box">
+                    <p><strong>Doppler Formula:</strong> f_observed = f_source × c / (c ± v)</p>
+                    <p>Approaching: frequency ↑ | Receding: frequency ↓</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===================== TAB 2: VEHICLE SPEED ESTIMATOR ===================== -->
+        <section id="analyzer" class="tab-content">
+            <h2>Vehicle Speed & Frequency Estimator</h2>
+            <p>Upload a real vehicle-passing sound file (.wav/.mp3) to estimate the vehicle's speed and horn frequency using FFT-based Doppler analysis.</p>
+
+            <div class="controls">
+                <div class="control-group">
+                    <label for="audio-upload">Upload Audio File:</label>
+                    <input type="file" id="audio-upload" accept="audio/*">
+                </div>
+                <div class="control-group">
+                    <label for="freq-min">Frequency Band Min: <span id="freq-min-val">200</span> Hz</label>
+                    <input type="range" id="freq-min" min="50" max="2000" value="200" step="10">
+                </div>
+                <div class="control-group">
+                    <label for="freq-max">Frequency Band Max: <span id="freq-max-val">1000</span> Hz</label>
+                    <input type="range" id="freq-max" min="100" max="5000" value="1000" step="10">
+                </div>
+                <button id="analyze-btn" class="primary-btn" disabled>📊 Analyze</button>
+            </div>
+
+            <div class="visualization">
+                <h3>Spectrogram & Doppler Curve</h3>
+                <canvas id="spectrogram-canvas" width="800" height="300"></canvas>
+                <canvas id="doppler-curve-canvas" width="800" height="250"></canvas>
+                <div id="analysis-results" class="results-box" style="display:none;">
+                    <h3>Results</h3>
+                    <p>Approaching Frequency: <span id="f-approach">—</span> Hz</p>
+                    <p>Receding Frequency: <span id="f-recede">—</span> Hz</p>
+                    <p>Estimated Source Frequency: <span id="f-source">—</span> Hz</p>
+                    <p>Estimated Vehicle Speed: <span id="v-estimate">—</span> m/s
+                        (<span id="v-estimate-kmh">—</span> km/h)</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===================== TAB 3: DRONE DETECTOR ===================== -->
+        <section id="drone" class="tab-content">
+            <h2>Drone Sound Detector</h2>
+            <p>Upload audio files to detect drone sounds using spectral analysis. Drones produce characteristic frequency patterns (rotor harmonics typically 100–500 Hz with harmonic peaks).</p>
+
+            <div class="controls">
+                <div class="control-group">
+                    <label for="drone-upload">Upload Audio File:</label>
+                    <input type="file" id="drone-upload" accept="audio/*">
+                </div>
+                <div class="control-group">
+                    <label for="drone-threshold">Detection Threshold: <span id="threshold-val">0.6</span></label>
+                    <input type="range" id="drone-threshold" min="0.1" max="1.0" value="0.6" step="0.05">
+                </div>
+                <div class="control-group">
+                    <label for="drone-band-low">Drone Band Low: <span id="band-low-val">80</span> Hz</label>
+                    <input type="range" id="drone-band-low" min="30" max="300" value="80" step="10">
+                </div>
+                <div class="control-group">
+                    <label for="drone-band-high">Drone Band High: <span id="band-high-val">500</span> Hz</label>
+                    <input type="range" id="drone-band-high" min="200" max="2000" value="500" step="10">
+                </div>
+                <button id="detect-btn" class="primary-btn" disabled>🔍 Detect Drone</button>
+                <button id="mic-btn" class="secondary-btn">🎤 Use Microphone (Live)</button>
+            </div>
+
+            <div class="visualization">
+                <h3>Spectral Analysis</h3>
+                <canvas id="drone-spectrum-canvas" width="800" height="300"></canvas>
+                <canvas id="drone-timeline-canvas" width="800" height="200"></canvas>
+                <div id="drone-results" class="results-box" style="display:none;">
+                    <h3>Detection Results</h3>
+                    <p>Status: <span id="drone-status">—</span></p>
+                    <p>Confidence: <span id="drone-confidence">—</span>%</p>
+                    <p>Dominant Frequency: <span id="drone-freq">—</span> Hz</p>
+                    <p>Harmonics Found: <span id="drone-harmonics">—</span></p>
+                    <p>Signal-to-Noise Ratio: <span id="drone-snr">—</span> dB</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="{{ url_for('static', filename='js/fft.js') }}"></script>
+<script src="{{ url_for('static', filename='js/doppler-simulator.js') }}"></script>
+<script src="{{ url_for('static', filename='js/doppler-analyzer.js') }}"></script>
+<script src="{{ url_for('static', filename='js/drone-detector.js') }}"></script>
+    <script>
+        // Tab switching
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                btn.classList.add('active');
+                document.getElementById(btn.dataset.tab).classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>
